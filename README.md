@@ -16,6 +16,31 @@ As part of my assignment in CS205 Operating Systems with Android, I have created
    docker compose up -d --build
    ```
 
+### API Endpoints
+
+Base URL: /api/v1
+
+1.  Insert score
+
+    Allows players to submit their score along with a name.
+
+    - Method: POST /scores
+    - Payload:
+      ```json
+      {
+        "name": "PlayerName",
+        "score": 12345
+      }
+      ```
+
+1.  View leaderboard
+
+    Get the list of top scores. You can limit the number of results by specifying the limit parameter.
+
+    - Method: GET /leaderboard
+    - Query Parameters:
+      - limit (optional): Specifies the number of top scores to return.
+
 ### Other Commands
 
 docker exec -it your_postgres_container_name psql -U your_username -d your_database_name

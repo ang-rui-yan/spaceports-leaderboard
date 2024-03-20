@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"spaceports-leaderboard/database"
+	"spaceports-leaderboard/handlers"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +15,8 @@ func SetupRoutes() *http.ServeMux {
 	routes := http.NewServeMux()
 
 	routes.HandleFunc("/health", pingHandler(database.DB.Db))
+	routes.HandleFunc("/api/v1/scores", insertScoreHandler())
+	routes.HandleFunc("/api/v1/leaderboard", viewLeaderboardHandler())
 
 	return routes
 }
@@ -21,6 +24,12 @@ func SetupRoutes() *http.ServeMux {
 
 func pingHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != http.MethodGet {
+            // If not, return a 405 Method Not Allowed error
+            http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+            return
+        }
+
 		dbConn, err := db.DB()
 		if err != nil {
 			log.Fatal(err)
@@ -42,5 +51,29 @@ func pingHandler(db *gorm.DB) http.HandlerFunc {
 	
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonResponse)
+	}
+}
+
+
+func insertScoreHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+            // If not, return a 405 Method Not Allowed error
+            http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+            return
+        }
+		handlers.InsertScore(w, r)
+	}
+}
+
+func viewLeaderboardHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+            // If not, return a 405 Method Not Allowed error
+            http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+            return
+        }
+
+		handlers.ListLeaderboard(w, r)
 	}
 }
