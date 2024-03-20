@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  server:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - server_database
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16.1
+    container_name: database
+    env_file:
+      - .env
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "spaceports"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+      start_period: 2s
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - server_database
+
+volumes:
+  database_postgres:
+
+networks:
+  server_database:
+    name: server_database
+    driver: bridge
