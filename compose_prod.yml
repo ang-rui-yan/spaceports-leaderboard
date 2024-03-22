@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  server:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - IS_PROD=true
+    env_file:
+      - .env
+    networks:
+      - server_database
+
+networks:
+  server_database:
+    name: server_database
+    driver: bridge
