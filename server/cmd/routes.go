@@ -15,9 +15,10 @@ func SetupRoutes() *http.ServeMux {
 	routes := http.NewServeMux()
 
 	routes.HandleFunc("/health", pingHandler(database.DB.Db))
+	routes.HandleFunc("/jwt", getJWTKey())
 	routes.HandleFunc("/api/v1/scores", insertScoreHandler())
 	routes.HandleFunc("/api/v1/leaderboard", viewLeaderboardHandler())
-
+	
 	return routes
 }
 
@@ -75,5 +76,17 @@ func viewLeaderboardHandler() http.HandlerFunc {
         }
 
 		handlers.ListLeaderboard(w, r)
+	}
+}
+
+func getJWTKey() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			// If not, return a 405 Method Not Allowed error
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		handlers.GetJWTKey(w, r)
 	}
 }

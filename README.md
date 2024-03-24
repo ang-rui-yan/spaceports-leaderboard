@@ -44,3 +44,17 @@ Base URL: /api/v1
 ### Other Commands
 
 docker exec -it your_postgres_container_name psql -U your_username -d your_database_name
+
+
+### gcloud
+
+```bash
+gcloud auth configure-docker
+
+docker buildx build -t lead
+erboard-api --platform linux/amd64 . 
+
+docker build -t gcr.io/PROJECT_ID/REPOSITORY_NAME/MY_GO_APP:v1 .
+
+docker push gcr.io/PROJECT_ID/REPOSITORY_NAME/MY_GO_APP:v1
+```

@@ -13,5 +13,5 @@ func main() {
 	
 	routes := cmd.SetupRoutes()
 
-	http.ListenAndServe(":8080", routes)
+	http.ListenAndServe(":5100", routes)
 }
