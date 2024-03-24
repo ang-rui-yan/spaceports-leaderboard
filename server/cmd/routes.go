@@ -7,6 +7,7 @@ import (
 
 	"spaceports-leaderboard/database"
 	"spaceports-leaderboard/handlers"
+	"spaceports-leaderboard/middleware"
 
 	"gorm.io/gorm"
 )
@@ -16,8 +17,9 @@ func SetupRoutes() *http.ServeMux {
 
 	routes.HandleFunc("/health", pingHandler(database.DB.Db))
 	routes.HandleFunc("/jwt", getJWTKey())
-	routes.HandleFunc("/api/v1/scores", insertScoreHandler())
-	routes.HandleFunc("/api/v1/leaderboard", viewLeaderboardHandler())
+
+	routes.HandleFunc("/api/v1/scores", middleware.JWTMiddleware(insertScoreHandler()).ServeHTTP)
+	routes.HandleFunc("/api/v1/leaderboard", middleware.JWTMiddleware(viewLeaderboardHandler()).ServeHTTP)
 	
 	return routes
 }
