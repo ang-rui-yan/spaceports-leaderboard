@@ -45,15 +45,16 @@ Base URL: /api/v1
 
 docker exec -it your_postgres_container_name psql -U your_username -d your_database_name
 
-
 ### gcloud
 
 ```bash
 gcloud auth configure-docker
 
-docker buildx build -t leaderboard-api --platform linux/amd64 . 
+gcloud auth configure-docker asia-northeast2-docker.pkg.dev
 
-docker build -t gcr.io/PROJECT_ID/REPOSITORY_NAME/MY_GO_APP:v1 .
+docker buildx build -t leaderboard-api:v1 --platform linux/amd64 .
 
-docker push gcr.io/PROJECT_ID/REPOSITORY_NAME/MY_GO_APP:v1
+docker tag leaderboard-api asia-northeast2-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/leaderboard-api:v1
+
+docker push asia-northeast2-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/leaderboard-api:v1
 ```
